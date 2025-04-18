@@ -12,15 +12,18 @@
     mermaid.initialize({ startOnLoad: false });
 
     function generateRoadmap() {
-      const ambition = document.getElementById("ambition").value.trim().toLowerCase();
-      const roadmapDiv = document.getElementById("roadmap");
-      const ambitionImageDiv = document.getElementById("ambitionImage");
-      const ambitionDetailsDiv = document.getElementById("ambitionDetails"); // New div for details
-      const ambitionDetailDiv = document.getElementById("ambitionDetail");
-      roadmapDiv.innerHTML = ""; // Clear previous roadmap
-      ambitionImageDiv.innerHTML = ""; // Clear previous image
-      ambitionDetailsDiv.innerHTML = ""; // Clear previous details
-      ambitionDetailDiv.innerHtml="";
+        const ambition = document.getElementById("ambition").value.trim().toLowerCase();
+        const roadmapDiv = document.getElementById("roadmap");
+        const ambitionImageDiv = document.getElementById("ambitionImage");
+        const ambitionDetailsDiv = document.getElementById("ambitionDetails"); // New div for details
+        const ambitionDetailDiv = document.getElementById("ambitionDetail");
+    
+        // Clear previous data
+        roadmapDiv.innerHTML = ""; // Clear previous roadmap
+        ambitionImageDiv.innerHTML = ""; // Clear previous image
+        ambitionDetailsDiv.innerHTML = ""; // Clear previous details
+        ambitionDetailDiv.innerHTML = ""; // Corrected typo
+        document.getElementById("video-container").innerHTML = "";
   
       // Career Roadmaps
       const roadmaps = {
@@ -838,49 +841,65 @@ This is the exam you must pass. It consists of three stages:
   
       // Generate Roadmap Graph
       if (roadmaps[ambition]) {
-          let mermaidCode = `graph TD;\n`;
-          roadmaps[ambition].forEach((step, index) => {
-              if (index < roadmaps[ambition].length - 1) {
-                  mermaidCode += `    step${index}[\"${step}\"] --> step${index + 1}[\"${roadmaps[ambition][index + 1]}\"]\n`;
-              }
-          });
-  
-          roadmapDiv.innerHTML = `<div class="mermaid">${mermaidCode}</div>`;
-          mermaid.run();
-  
-          // Show ambition image if available
-          if (images[ambition]) {
-              ambitionImageDiv.innerHTML = `<img src="${images[ambition]}" alt="${ambition}" class="ambition-img">`;
-          }
-  
-          // Show detailed information
-          
-          if (details[ambition]) {
-              ambitionDetailsDiv.innerHTML = details[ambition];
-          }
-          const videoContainer = document.getElementById("video-container");
-          if (videos[ambition]) {
-              videoContainer.innerHTML = `<h3>Related Video:</h3><iframe src="${videos[ambition]}" frameborder="0" allowfullscreen></iframe>`;
-          } else {
-              videoContainer.innerHTML = "";
-          }
-          //const ambitionDetailsDiv = document.getElementById("ambitionDetail");
-          //const ambitionDetailDiv = document.getElementById("ambitionDetails");
-          if (ambitionData[ambition.toLowerCase()]) {
-            const data = ambitionData[ambition.toLowerCase()];
-            ambitionDetailDiv.innerHTML = `
-                ${data.educationPath}
-                ${data.specializations}
-                ${data.costEstimation}
-            `;
-        } else {
-            ambitionDetailDiv.innerHTML = `<p style="color: red;">No details available for this ambition.</p>`;
-        } 
-      } else {
-          roadmapDiv.innerHTML = "<p>Roadmap not found. Try another ambition.</p>";
-      }
-  }
-  
+    console.log("Roadmap data found for ambition:", ambition);
+
+    // Generate roadmap graph
+    let mermaidCode = `graph TD;\n`;
+    roadmaps[ambition].forEach((step, index) => {
+        if (index < roadmaps[ambition].length - 1) {
+            mermaidCode += `    step${index}["${step}"] --> step${index + 1}["${roadmaps[ambition][index + 1]}"]\n`;
+        }
+    });
+
+    roadmapDiv.innerHTML = `<div class="mermaid">${mermaidCode}</div>`;
+    mermaid.run();  // Ensure mermaid.js is running
+
+    // Log if image is found for the ambition
+    if (images[ambition]) {
+        console.log("Image found for ambition:", ambition);
+        ambitionImageDiv.innerHTML = `<img src="${images[ambition]}" alt="${ambition}" class="ambition-img">`;
+    } else {
+        console.log("No image found for ambition:", ambition);
+    }
+
+    // Log if details are found for the ambition
+    if (details[ambition]) {
+        console.log("Details found for ambition:", ambition);
+        ambitionDetailsDiv.innerHTML = details[ambition];
+    } else {
+        console.log("No details found for ambition:", ambition);
+    }
+
+    // Log if video is found for the ambition
+    const videoContainer = document.getElementById("video-container");
+    if (videos[ambition]) {
+        console.log("Video found for ambition:", ambition);
+        videoContainer.innerHTML = `<h3>Related Video:</h3><iframe src="${videos[ambition]}" frameborder="0" allowfullscreen></iframe>`;
+    } else {
+        console.log("No video found for ambition:", ambition);
+        videoContainer.innerHTML = "";
+    }
+
+    // Log if ambition-specific details are found
+    if (ambitionData[ambition.toLowerCase()]) {
+        const data = ambitionData[ambition.toLowerCase()];
+        console.log("Ambition data found for:", ambition);
+        ambitionDetailDiv.innerHTML = `
+            <h4>Education Path:</h4>${data.educationPath}
+            <h4>Specializations:</h4>${data.specializations}
+            <h4>Cost Estimation:</h4>${data.costEstimation}
+        `;
+    } else {
+        console.log("No ambition-specific data found for:", ambition);
+        ambitionDetailDiv.innerHTML = `<p style="color: red;">No details available for this ambition.</p>`;
+    }
+
+} else {
+    console.log("No roadmap data found for ambition:", ambition);
+    // Show error message if the ambition is not found
+    roadmapDiv.innerHTML = "<p style='color: red;'>Roadmap not found. Try another ambition. We are working on it, or you might have typed it wrong. Please check the spelling.</p>";
+}
+}
   </script>
 
   <style>
